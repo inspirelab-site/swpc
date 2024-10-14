@@ -9,7 +9,7 @@ overlap=windowsize-1;
 maxDur=15; maxLag=floor(maxDur/TR); 
 %% Loading files and intialization
 
-addpath('./slpcv0323/')
+addpath('./swpcv0323/')
 fileIN='data.mat'; load(fileIN);
 [ntimepoints, nsubj]=size(BOLD_ROI1_array); nroi=2; st=1; 
 if ~exist('./output','dir'), mkdir('./output/'); end
