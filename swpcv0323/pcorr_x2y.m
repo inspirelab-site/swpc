@@ -19,7 +19,7 @@ function [corr_bic, Nh_bic, corr_aic, Nh_aic, corr_std, corr0, H]=pcorr_x2y(V1, 
         [h, flg] = lsqr(L,V2,1e-6,100); %unconstraint LS h    
         switch(Constraint)
             case 'all'
-                H(iNh, 1:iNh)=double(h_tmp)';
+                H(iNh, 1:iNh)=double(h)';
                 divV1V2=V2-L*h; %TO BE WRITTEN
             case 'p'  
                 hp_min=min(h(h>0)); if isempty(hp_min)==1, hp_min=1e-07; end
@@ -71,4 +71,5 @@ function [corr_bic, Nh_bic, corr_aic, Nh_aic, corr_std, corr0, H]=pcorr_x2y(V1, 
 
     [coef_std,~]=corrcoef(V2, V1(Nh:end));
     corr_std=coef_std(1,2);
+
 end
