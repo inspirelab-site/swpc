@@ -1,46 +1,75 @@
 # SWpC (MATLAB): Sliding-Window Prediction Correlation
 
-This repository provides a MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** for estimating **time-varying directed interactions** between ROI time series.
-
-SWpC estimates *directional influence* by predicting a target time course from a **lag-embedded** source time course within each sliding window, then computing the **prediction correlation**. The model order (lag length) can be selected per window using **AIC** or **BIC**.
-
-Repo link: https://github.com/inspirelab-site/swpc
+MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** for estimating **time-varying directed interactions** between ROI time series (e.g., fMRI BOLD).
 
 ---
 
-## What’s inside
+## Using your own data
 
-- `main_script2run_swpc.m`  
-  End-to-end example: loads the demo data, runs SWpC for ROI pairs, and saves per-subject outputs.
+SWpC is called on **two vectors per direction**:
 
-- `data.mat`  
-  Example input data used by the main script.
+- `tc1` (source): `(T x 1)`
+- `tc2` (target): `(T x 1)`
 
-- `swpcv0323/`  
-  Core functions:
-  - `sliding_pcorr_window.m` — runs SWpC across sliding windows
-  - `pcorr_x2y.m` — fits the lagged prediction model, computes prediction correlation, performs AIC/BIC order selection
-
-- `output/` *(created when you run the script)*  
-  Per-subject results saved as `.mat` files (e.g., `subj1.mat`).
+To use more ROIs, construct `bold` as `(nroi x T)` and loop over ROI pairs (as in the demo script).
 
 ---
 
-## Requirements
+## Key parameters (in `main_script2run_swpc.m`)
 
-- MATLAB (recent versions recommended)
-- Toolboxes (depending on settings):
-  - **Statistics and Machine Learning Toolbox** (for `aicbic`)
-  - **Optimization Toolbox** (for constrained least squares via `lsqlin`, used when `Constraint='p'`)
+- `TR` (sec)  
+  Sampling interval.
 
-> If you do not have Optimization Toolbox, set `Constraint='all'` in the main script to avoid `lsqlin`.
+- `windowsize_duration` (sec)  
+  Window duration in seconds. Window length in samples is computed from `TR` and forced even:
+  - `windowsize = floor(windowsize_duration/TR/2)*2`
+
+- `overlap` (samples)  
+  Window overlap. The demo uses near full overlap:
+  - `overlap = windowsize - 1`
+
+- `maxDur` (sec) and `maxLag` (samples)  
+  Maximum lag/order search range:
+  - `maxLag = floor(maxDur/TR)`
+
+- `Constraint`  
+  Regression mode used to estimate the impulse response:
+  - `'p'`  : positivity-constrained least squares (uses `lsqlin`)
+  - `'all'`: unconstrained least squares (uses `lsqr`)
 
 ---
 
-## Quick start
+## Method overview
 
-1) Clone the repo and open MATLAB in the repo root.
+Within each sliding window, SWpC:
 
-2) Run:
+1. **Lag-embeds** the source window to form a design matrix of delayed versions of the source time series.
+2. **Fits an impulse response / filter** `h` such that the lag-embedded source predicts the target window.
+3. **Selects model order** (`Nh`, number of lags) per window using information criteria.
+4. **Computes prediction correlation** between the observed target window and the predicted target window.
+
+Repeating across windows yields a time-resolved directed interaction estimate.
+
+---
+
+## AIC vs AICc
+
+This implementation computes both **AIC** and **AICc** (small-sample corrected AIC).  
+The returned AIC-based choice (`Nh_aic`, `corr_aic`) should be interpreted as:
+
+- **AICc-selected** in short-window regimes (when the sample size per window is not large relative to the number of fitted parameters),
+- otherwise **AIC-selected**.
+
+AICc is recommended for short windows because it penalizes model complexity more strongly and tends to yield more stable (less overfit) order selection.
+
+---
+
+## Outputs
+
+### What `sliding_pcorr_window` returns (per direction)
+
+Calling:
+
 ```matlab
-run('main_script2run_swpc.m')
+[corr_bic, Nh_bic, corr_aic, Nh_aic, corr_std, corr0, H, nmaps] = ...
+    sliding_pcorr_window(tc1, tc2, windowsize, overlap, maxLag, Constraint);
