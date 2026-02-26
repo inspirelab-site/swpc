@@ -2,7 +2,9 @@
 
 MATLAB reference implementation of the **Sliding-Window Prediction Correlation (SWpC)** framework for estimating the **time-varying strength** (prediction-correlation) and **duration** (how long directed influence persists across windows) of directed interactions between ROI time series (e.g., fMRI BOLD).
 
-Repo: https://github.com/inspirelab-site/swpc
+If you use this code, please cite the SWpC paper:  
+**Paper/Preprint:** Xu N, Zhang X, Pan WJ, Smith JL, Schumacher EH, Allen JW, Calhoun VD, Keilholz SD. *Time-Varying Directed Interactions in Functional Brain Networks: Modeling and Validation.* bioRxiv (2026). https://doi.org/10.64898/2026.02.15.706049  
+**Code:** https://github.com/inspirelab-site/swpc
 
 ---
 
