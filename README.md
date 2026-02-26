@@ -1,6 +1,6 @@
-# SWpC (MATLAB): Sliding-Window Prediction Correlation
+# Time-varying directed interaction estimation
 
-MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** for estimating **time-varying directed interactions** between ROI time series (e.g., fMRI BOLD).
+MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** framework for estimating strength and duration **time-varying directed interactions** between ROI time series (e.g., fMRI BOLD).
 
 Repo: https://github.com/inspirelab-site/swpc
 
@@ -23,7 +23,6 @@ Repo: https://github.com/inspirelab-site/swpc
 - Optimization Toolbox only if using positivity constraint (`lsqlin` via `Constraint='p'`)
 
 > If you don’t have Optimization Toolbox, set `Constraint='all'`.
-
 ---
 
 ## Quick start
@@ -32,6 +31,7 @@ In MATLAB (repo root):
 
 ```matlab
 run('main_script2run_swpc.m')
+```
 ---
 
 ## Using your own data
@@ -44,6 +44,7 @@ SWpC is called on **two vectors per direction**:
 To use more ROIs, construct input as `(nroi x T)` and loop over ROI pairs (as in the demo script).
 
 ---
+
 
 ## Key parameters (in `main_script2run_swpc.m`)
 
