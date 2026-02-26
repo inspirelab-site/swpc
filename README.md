@@ -2,6 +2,36 @@
 
 MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** for estimating **time-varying directed interactions** between ROI time series (e.g., fMRI BOLD).
 
+Repo: https://github.com/inspirelab-site/swpc
+
+---
+
+## Contents
+
+- `main_script2run_swpc.m` — demo driver script (load data → run SWpC → save outputs)
+- `data.mat` — demo input data
+- `swpcv0323/`
+  - `sliding_pcorr_window.m` — sliding-window wrapper
+  - `pcorr_x2y.m` — core estimator (fit + order selection + correlation)
+
+---
+
+## Requirements
+
+- MATLAB
+- Statistics and Machine Learning Toolbox (`aicbic`)
+- Optimization Toolbox only if using positivity constraint (`lsqlin` via `Constraint='p'`)
+
+> If you don’t have Optimization Toolbox, set `Constraint='all'`.
+
+---
+
+## Quick start
+
+In MATLAB (repo root):
+
+```matlab
+run('main_script2run_swpc.m')
 ---
 
 ## Using your own data
@@ -11,7 +41,7 @@ SWpC is called on **two vectors per direction**:
 - `tc1` (source): `(T x 1)`
 - `tc2` (target): `(T x 1)`
 
-To use more ROIs, construct `bold` as `(nroi x T)` and loop over ROI pairs (as in the demo script).
+To use more ROIs, construct input as `(nroi x T)` and loop over ROI pairs (as in the demo script).
 
 ---
 
