@@ -1,6 +1,6 @@
 # Time-varying directed interaction estimation
 
-MATLAB reference implementation of **Sliding-Window Prediction Correlation (SWpC)** framework for estimating strength and duration **time-varying directed interactions** between ROI time series (e.g., fMRI BOLD).
+MATLAB reference implementation of the **Sliding-Window Prediction Correlation (SWpC)** framework for estimating the **time-varying strength** (prediction-correlation) and **duration** (how long directed influence persists across windows) of directed interactions between ROI time series (e.g., fMRI BOLD).
 
 Repo: https://github.com/inspirelab-site/swpc
 
@@ -22,7 +22,6 @@ Repo: https://github.com/inspirelab-site/swpc
 - Statistics and Machine Learning Toolbox (`aicbic`)
 - Optimization Toolbox only if using positivity constraint (`lsqlin` via `Constraint='p'`)
 
-> If you don’t have Optimization Toolbox, set `Constraint='all'`.
 ---
 
 ## Quick start
@@ -73,10 +72,9 @@ To use more ROIs, construct input as `(nroi x T)` and loop over ROI pairs (as in
 ## Method overview
 
 Within each sliding window, SWpC:
-
 1. **Lag-embeds** the source window to form a design matrix of delayed versions of the source time series.
 2. **Fits an impulse response / filter** `h` such that the lag-embedded source predicts the target window.
-3. **Selects model order** (`Nh`, number of lags) per window using information criteria.
+3. **Selects model order** (`Nh`, number of lags) per window using information criteria (AIC, AICc, or BIC).
 4. **Computes prediction correlation** between the observed target window and the predicted target window.
 
 Repeating across windows yields a time-resolved directed interaction estimate.
